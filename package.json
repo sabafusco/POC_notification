@@ -1,0 +1,13 @@
+{
+  "name": "POC_notification",
+  "version": "1.0.0",
+  "description": "Poc Node.js",
+  "author": "Sabato Fusco",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
