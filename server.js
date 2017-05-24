@@ -4,13 +4,11 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var routesEventi=require('./app/routes/eventoRoute'); 
 var routesUtenti=require('./app/routes/utenteRoute'); 
-var database = require('./config/database');
+var config = require('./config/database');
 
 var app = express();
-var url = 'mongodb://localhost/EmployeeDB';
-var str = "";
 
-mongoose.connect(database.urlMongo);
+mongoose.connect(config.urlMongo);
 
 // parsing del body per leggere i parametri
 app.use(bodyParser.json());                        
@@ -21,7 +19,7 @@ app.use("/event",routesEventi);
 app.use("/user",routesUtenti);
 
 //app.listen(3000);
-var server = app.listen(3000, function() {}); 
+var server = app.listen(config.nodeport, function() {}); 
 
 var webSocket = require('./app/websockets/socket').listen(server);
 

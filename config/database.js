@@ -1,11 +1,20 @@
 
 module.exports = (function (env) {
-  var mongodb = {};
+  var config = {};
   switch (env) {
     
     case 'local':
-      database = require('../env/localsvil');
-      mongodb.urlMongo = database.mongodb.url;
+      //database = require('../env/localsvil');
+      //mongodb.urlMongo = database.mongodb.url;
+      var node_port = process.env.NODE_PORT || "3000";
+
+      var db_host = process.env.DB_HOST || "localhost";
+      var db_port = process.env.DB_PORT || "27017";
+      var db_schema = process.env.DB_SCHEMA || "eventi";
+      
+      config.urlMongo = 'mongodb://'+db_host+':'+db_port+'/'+db_schema;
+      config.nodeport = node_port;
+      
       break;
    
 //    case 'development':
@@ -25,8 +34,8 @@ module.exports = (function (env) {
       process.exit(1);
   }
  
-  return mongodb;
-})(process.env.NODE_ENV="local");
+  return config;
+})(process.env.NODE_ENV || "local");
 
 //NB :: Settare la variabile d'ambiente NODE_ENV per il recupero dell'env
 
