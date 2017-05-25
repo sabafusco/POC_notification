@@ -7,6 +7,12 @@ module.exports.getUtenti = function(functionRes){
             functionRes(utenti);
         });
     };
+    
+module.exports.getUtenteByMatricolaAndPassword = function(matricola,password,functionRes){
+        crud.findByMatricolaAndPassword(matricola, password, function(utenti){
+            functionRes(utenti);
+        });
+    };
 
 
     

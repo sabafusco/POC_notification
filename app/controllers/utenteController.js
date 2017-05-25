@@ -9,7 +9,6 @@ module.exports = {
     crud.findAll(function(utenti){
         res.send(utenti);
     });
-    
   },
  
   saveUtente: function(req, res, next) {
@@ -17,9 +16,14 @@ module.exports = {
     var nome=req.body.nome;
     var cognome=req.body.cognome;    
     var matricola=req.body.matricola;    
-    
-    crud.createUtente(nome, cognome, matricola,function(utente){
-        res.send(utente);    
-    });
+    var password=req.body.password;    
+    try{
+        crud.createUtente(nome, cognome, matricola,password,function(utente){
+            res.send(utente);    
+        });
+    }catch (exc){
+        console.log("Errore salvataggio nuovo utente: "+exc);
+        res.send(null); 
+    }
   }  
 };
