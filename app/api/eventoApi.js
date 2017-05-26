@@ -60,8 +60,11 @@ module.exports.createResponseMessage = function(type,msg,eventiVisualizzati,even
             eventiNonVisualizzati:eventiNonVisualizzati,
             msg:msg
         };
-                
-        funcResp(message);
+        
+        if(funcResp)
+            funcResp(message);
+        else
+            return message;
 };
 
 

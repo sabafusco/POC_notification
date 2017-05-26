@@ -1,17 +1,17 @@
-var crud = require('../crud/utenteCrud');
+    var crud = require('../crud/utenteCrud');
 
-//API
+    //API
 
-module.exports.getUtenti = function(functionRes){
-        crud.findAll(function(utenti){
-            functionRes(utenti);
-        });
+    module.exports.getUtenti = function(functionRes){
+        crud.findAll(functionRes);
     };
     
-module.exports.getUtenteByMatricolaAndPassword = function(matricola,password,functionRes){
-        crud.findByMatricolaAndPassword(matricola, password, function(utenti){
-            functionRes(utenti);
-        });
+    module.exports.getUtenteById = function(id,functionRes){
+        crud.findById(id,functionRes);
+    };
+    
+    module.exports.getUtenteByMatricolaAndPassword = function(matricola,password,functionRes){
+        crud.findByMatricolaAndPassword(matricola, password, functionRes);
     };
 
 

@@ -62,7 +62,7 @@ module.exports = {
   //NON UTILIZZA CALLBACK  --> ERRATO
   saveEvento: function(req, res, next) {
       
-    var matrIns=req.body.matricolainserimento;
+    var matrIns=req.session.user_id;
     var matrint=req.body.matricoleinteressate;    
     var titolo=req.body.titolo;    
     var descr=req.body.descrizione;    

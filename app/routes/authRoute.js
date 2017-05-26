@@ -9,14 +9,14 @@ router.post('/login', function (req, res) {
     
     //IF da eliminare
     if(post.matricola==='admin' && post.password==='admin' ){
-        req.session.user_id = "IDUTENTEADMIN";
-        res.redirect('/POC/angular/informazioni.html?matricola=admin');
+        req.session.user_id = "5922b8e2b943693d1ccfffd2";
+        res.redirect('/POC/angular/informazioni.html');
     }else{   
         apiUtenti.getUtenteByMatricolaAndPassword(post.matricola,post.password, function(utente){
             if(utente){
                 console.log("Utente loggato--->"+utente._id);
                 req.session.user_id = utente._id;
-                res.redirect('/POC/angular/informazioni.html?matricola='+post.matricola);
+                res.redirect('/POC/angular/informazioni.html');
             }else{
                 res.redirect('/POC/angular/login.html');
             }

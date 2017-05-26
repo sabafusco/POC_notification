@@ -10,6 +10,17 @@ module.exports = {
         res.send(utenti);
     });
   },
+  
+  //UTILIZZA CALLBACK
+  getUtente: function(req, res, next) {
+        if(req.session.user_id){
+            crud.findById(req.session.user_id,function(utente){
+                res.send(utente);
+            });
+        }else{
+            res.status(403).send('Operazione non concessa');
+        }
+  },
  
   saveUtente: function(req, res, next) {
     

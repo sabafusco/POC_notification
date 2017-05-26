@@ -30,6 +30,13 @@ module.exports = {
             if (err) throw err;
             else resultFunc(eventi);
         } );
+    },
+    
+    findById :function(id,resultFunc){
+        Utente.findById(id, function (err, eventi) { 
+            if (err) throw err;
+            else resultFunc(eventi);
+        } );
     }
 
 };
