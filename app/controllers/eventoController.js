@@ -61,24 +61,62 @@ module.exports = {
   
   //NON UTILIZZA CALLBACK  --> ERRATO
   saveEvento: function(req, res, next) {
-      
-    var matrIns=req.session.user_id;
-    var matrint=req.body.matricoleinteressate;    
-    var titolo=req.body.titolo;    
-    var descr=req.body.descrizione;    
-    
-    crud.createEvento(titolo, descr, matrIns,matrint,function(event){
-        
-        if(event.matricoleInteressate){
-            var matricole=event.matricoleInteressate;
-            matricole.forEach(function(matr){
-                crud.findByMatricolaNotVisualized(matr.matricola, function(eventi){
-                    socket.notificaUtente(matr.matricola, eventi);
-                });
+    if( req.session.role &&  (req.session.role==="ADMIN" || req.session.role==="Amministratore") ){  
+            var matrIns=req.session.user_id;
+            var matrint=req.body.matricoleinteressate;    
+            var titolo=req.body.inputTitolo;    
+            var descr=req.body.inputDescrizione;    
+
+            crud.createEvento(titolo, descr, matrIns ,matrint ,function(err,event){
+                if(err){
+                     return res.status(500).send({ succes: false, message: 'Errore inserimento evento.' });
+                }else{
+                    if(event.matricoleInteressate){
+                        var matricole=event.matricoleInteressate;
+                        matricole.forEach(function(matr){
+                            crud.findByMatricolaNotVisualized(matr.matricola, function(eventi){
+                                socket.notificaUtente(matr.matricola, eventi);
+                            });
+                        });
+                    }
+
+                    res.send(event);  
+                }
             });
-        }
+    }else{
+        return res.status(500).send({ succes: false, message: 'Non hai i permessi necessari per effettuare questa operazione.' });
+    }
+  },
+  
+   deleteEvento: function(req, res, next) {
+        var id = req.params.id;
         
-        res.send(event);    
-    });
-  }  
+        apiEventi.eliminaEventoById(id , function(err){
+            if(err){
+                res.status(500).send({ succes: false, message: err.message });
+            }else{
+                res.send({ succes: true, message: 'Eliminazione evento avvenuta con successo.' });
+            }
+        });
+   },
+   
+   updateEvento : function(req, res, next) {
+        var id=req.body.inputId;
+        var matrint=req.body.matricoleinteressate;    
+        var titolo=req.body.inputTitolo;    
+        var descr=req.body.inputDescrizione; 
+        
+        console.log("Controller descr-->"+descr);
+        console.log("Controller titolo-->"+titolo);
+        
+        apiEventi.updateEvento(id, titolo, descr, matrint, function(err){
+            
+            if(err){
+                res.status(500).send({ succes: false, message: err.message });
+            }else{
+                res.send({ succes: true, message: 'Aggiornamento Evento avvenuto con successo.' });
+            }
+        });
+   }
+  
 };

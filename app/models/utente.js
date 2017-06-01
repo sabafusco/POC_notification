@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 var utenteSchema = new Schema({
   nome:String,
   cognome:String,
+  ruolo:String,
   matricola:{ type: String, required: true, unique: true },
   password:{ type: String, required: true }
 });

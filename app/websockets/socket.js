@@ -62,12 +62,16 @@ var checkSessionId = function(request, sessionParser) {
             sessionParser(request.httpRequest, {}, function(){
                 var user_id = request.httpRequest.session.user_id;
                 if(user_id){
-                    apiUtenti.getUtenteById(user_id , function(utente){
-                        if(utente && utente.matricola){
-                            request.httpRequest.session.matricola=utente.matricola;
-                            resolve("UTENTE LOGGATO");
+                    apiUtenti.getUtenteById(user_id , function(err, utente){
+                        if(err){
+                            console.error("Errore recupero utente by ID nella Websocket.")
+                            reject(Error(err.message));
+                        }else{
+                            if(utente && utente.matricola){
+                                request.httpRequest.session.matricola=utente.matricola;
+                                resolve("UTENTE LOGGATO");
+                            }
                         }
-                        reject(Error("UTENTE NON TROVATO!!!"));
                     });
                 }else{
                     reject(Error("UTENTE NON LOGGATO!!!"));

@@ -16,6 +16,7 @@ router.post('/login', function (req, res) {
             if(utente){
                 console.log("Utente loggato--->"+utente._id);
                 req.session.user_id = utente._id;
+                req.session.role = utente.ruolo;
                 res.redirect('/POC/angular/informazioni.html');
             }else{
                 res.redirect('/POC/angular/login.html');

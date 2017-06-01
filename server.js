@@ -29,8 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(multer);
 
-app.use("/event",checkAuth,routesEventi);
-app.use("/user",checkAuth,routesUtenti);
+app.use("/event",checkAuth,routesEventi,errorHandler);
+app.use("/user",checkAuth,routesUtenti,errorHandler);
 app.use("/auth",routesAuth);
 
 //app.listen(3000);
@@ -75,9 +75,15 @@ var webSocket = require('./app/websockets/socket').listen(server,sessionParser);
 function checkAuth(req, res, next) {
   if (!req.session.user_id) {
     console.log("OPERAZIONE NON CONSENTITA");
-    res.status(500).send({ error: 'OPERAZIONE NON CONSENTITA!' });
+    res.status(500).send({ success:false, message:"Non puoi effettuare questa operazione: Utente non autenticato.", error: 'OPERAZIONE NON CONSENTITA!' });
   } else {
     console.log("OPERAZIONE CONSENTITA");
     next();
   }
+}
+
+function errorHandler(err, req, res, next) {
+  console.log("**ERROR HANDLER**");  
+  console.error(err.message + ":" + err.stack);  
+  res.status(500).send({ success: 'false', message:"Errore inatteso." });
 }

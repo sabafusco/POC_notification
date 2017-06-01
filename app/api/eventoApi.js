@@ -1,4 +1,5 @@
 var crud = require('../crud/eventoCrud');
+var Evento = require('../models/evento');
 
 //API
 
@@ -18,7 +19,7 @@ module.exports.getEventiVisualizzati = function(matricola, functionRes){
         }
     };
     
-module.exports.setEventoComeVisualizzato = function(idEvento,matricola, functionRes){
+module.exports.setEventoComeVisualizzato = function(idEvento, matricola, functionRes){
         if(matricola && idEvento){
                 crud.findById(idEvento, function(evento){
                     var interessati = evento.matricoleInteressate;
@@ -36,6 +37,56 @@ module.exports.setEventoComeVisualizzato = function(idEvento,matricola, function
                 });
         }
     };
+    
+    module.exports.eliminaEventoById = function(id, functionRes){
+
+        crud.deleteById(id, function(err, result){
+            if(err){
+                    err.message="Errore inatteso durante la cancellazione dell'evento.";
+                    functionRes(err);
+            }else{
+                functionRes(null,result);
+            }
+        });
+            
+    };
+    
+    module.exports.updateEvento = function(id, titolo, descr, matrInter,  functionRes){
+        
+        var arrMatricole = [];
+        
+        if(matrInter){
+            var matricole = matrInter.toString().split(',');
+            for(var index in matricole){
+                arrMatricole.push({matricola:matricole[index], visualizzato:false});
+            };
+        }
+        
+        var evento = new Evento ({
+                _id:id,
+                titolo:titolo,
+                descrizione:descr,
+                matricoleInteressate: arrMatricole
+            });
+            
+        console.log("API --> Titolo:"+titolo);
+        console.log("API --> Descrizione:"+descr);
+        console.log("API --> matrInt:"+matrInter);
+        
+        crud.updateEvent( evento, function(err, result){
+            if(err){
+                    console.error("ERROR:"+err);
+                    err.message="Errore inatteso durante la modifica dell'evento.";
+                    functionRes(err,null);
+            }else{
+                functionRes(null,result);
+            }
+        });
+            
+    };
+    
+    
+    
 
 module.exports.createResponseMessage = function(type,msg,eventiVisualizzati,eventiNonVisualizzati,funcResp){
         var ids = [];

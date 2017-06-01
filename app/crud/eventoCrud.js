@@ -20,8 +20,8 @@ module.exports = {
         });
         
         event.save(function(err) {
-            if (err) throw err;
-            else resultFunc(event);
+            if (err) resultFunc(err,null);
+            else resultFunc(null,event);
         });
     },
     
@@ -71,6 +71,24 @@ module.exports = {
         Evento.update({_id: evento._id}, evento, {upsert: true}, function(err,eventoUp){
             if (err) throw err;
             else resultFunc(evento);        
+        });
+    },
+    
+    deleteById: function(id,resultFunc){
+        Evento.remove({_id:id}, function (err, eventi) {
+            if (err) resultFunc(err,null);
+            else resultFunc(null,eventi);
+        } );
+    },
+    
+    updateEvent:function(evento,resultFunc){
+        
+        console.log("CRUD --> Titolo"+evento.titolo);
+        console.log("CRUD --> Descrizione"+evento.descrizione);
+        
+        Evento.update({_id: evento._id}, evento, {upsert: true}, function(err,eventoUp){
+            if (err) resultFunc(err, null);
+            else resultFunc(null, eventoUp);        
         });
     }
   
