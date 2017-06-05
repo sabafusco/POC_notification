@@ -18,14 +18,14 @@ module.exports.listen = function(server, sessionParser ){
     // al websocket server
     wsServer.on('request', function(request) {
         console.log("**ON REQUEST**");
-        gestisciConnessione(request);
-//        checkSessionId(request,sessionParser)
-//            .then(function() {
-//                    return gestisciConnessione(request);
-//                  })
-//            .catch(function(err) {
-//                    console.log(err);
-//                  });
+
+        checkSessionId(request,sessionParser)
+            .then(function() {
+                    return gestisciConnessione(request);
+                  })
+            .catch(function(err) {
+                    console.log(err);
+                  });
     });
     
     return wsServer;
