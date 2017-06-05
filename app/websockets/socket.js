@@ -17,14 +17,15 @@ module.exports.listen = function(server, sessionParser ){
     // Questa funzione di callback è richiamata ogni volta che qualche utente prova a connettersi 
     // al websocket server
     wsServer.on('request', function(request) {
-        
-        checkSessionId(request,sessionParser)
-            .then(function() {
-                    return gestisciConnessione(request);
-                  })
-            .catch(function(err) {
-                    console.log(err);
-                  });
+        console.log("**ON REQUEST**");
+        gestisciConnessione(request);
+//        checkSessionId(request,sessionParser)
+//            .then(function() {
+//                    return gestisciConnessione(request);
+//                  })
+//            .catch(function(err) {
+//                    console.log(err);
+//                  });
     });
     
     return wsServer;
@@ -58,8 +59,6 @@ var checkSessionId = function(request, sessionParser) {
     
     return new Promise(function(resolve, reject) {
         try{
-            
-            resolve("UTENTE LOGGATO");  //Da eliminare
             console.log("**checkSessionId**");
             sessionParser(request.httpRequest, {}, function(){
                 var user_id = request.httpRequest.session.user_id;
@@ -107,13 +106,18 @@ var gestisciConnessione = function(request) {
 
     //Funzione richiamata quando l'utente invia il messaggio con la propria matricola 
     connection.on('message', function(message) {
-         console.log("**Messaggio ricevuto**->");
+         console.log("**ON MESSAGE**");
+         
+         
         if (message.type === 'utf8') { // accetta solo testo
-
+            
+            console.log("** message.type === utf8 **");
+            
             var msgObj = JSON.parse(message.utf8Data);
-
+            
             if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
                 
+                console.log("** msgObj.type===USERNAME **");
                 
                 userName = request.httpRequest.session.matricola;
 
@@ -139,7 +143,10 @@ var gestisciConnessione = function(request) {
                 });
 
             }else if (msgObj.type==="VISUALIZZA_LISTA_EVENTI"){
-                    utentiInVisualizzazione[userName] = true;
+                    
+                console.log("** msgObj.type===VISUALIZZA_LISTA_EVENTI **");
+                    
+                utentiInVisualizzazione[userName] = true;
                     //Invia un messaggio con gli eventi non visualizzati
                     apiEventi.getEventiNonVisualizzati(userName,function (eventiNonVisualizzati){
 
