@@ -18,14 +18,16 @@ module.exports.listen = function(server, sessionParser ){
     // al websocket server
     wsServer.on('request', function(request) {
         console.log("**ON REQUEST**");
-
-        checkSessionId(request,sessionParser)
-            .then(function() {
-                    return gestisciConnessione(request);
-                  })
-            .catch(function(err) {
-                    console.log(err);
-                  });
+        
+        gestisciConnessione(request)
+        
+//        checkSessionId(request,sessionParser)
+//            .then(function() {
+//                    return gestisciConnessione(request);
+//                  })
+//            .catch(function(err) {
+//                    console.log(err);
+//                  });
     });
     
     return wsServer;
@@ -115,17 +117,20 @@ var gestisciConnessione = function(request) {
             
             var msgObj = JSON.parse(message.utf8Data);
             
-            if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
+            //if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
+            if (userName === false && msgObj.type==="USERNAME" ) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
                 
                 console.log("** msgObj.type===USERNAME **");
                 
-                userName = request.httpRequest.session.matricola;
+                //userName = request.httpRequest.session.matricola;
+                userName = "sabatino";
 
                 connessioni[userName]=connection; //registra l'utente
                                 
                 var msg = "Utente registrato con matricola-->"+userName;
                 
                 console.log("**Messaggio di risposta**->"+msg);
+                console.log("**Connection**->"+connection);
                
                 //Invia un messaggio a conferma dell'avvenuta registrazione
                 apiEventi.createResponseMessage("REGISTRAZIONE",msg,null,null,function(message){
