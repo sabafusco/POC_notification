@@ -58,22 +58,26 @@ var checkSessionId = function(request, sessionParser) {
     
     return new Promise(function(resolve, reject) {
         try{
-            
+            console.log("**checkSessionId**");
             sessionParser(request.httpRequest, {}, function(){
                 var user_id = request.httpRequest.session.user_id;
+                console.log("**userID**->"+user_id);
                 if(user_id){
                     apiUtenti.getUtenteById(user_id , function(err, utente){
                         if(err){
                             console.error("Errore recupero utente by ID nella Websocket.")
                             reject(Error(err.message));
                         }else{
+                            console.log("**Utente Trovato**");
                             if(utente && utente.matricola){
                                 request.httpRequest.session.matricola=utente.matricola;
+                                console.log("**Matricola Utente**->"+utente.matricola);
                                 resolve("UTENTE LOGGATO");
                             }
                         }
                     });
                 }else{
+                    console.error("**Uaser id non trovato**");
                     reject(Error("UTENTE NON LOGGATO!!!"));
                 }
             });
@@ -101,6 +105,7 @@ var gestisciConnessione = function(request) {
 
     //Funzione richiamata quando l'utente invia il messaggio con la propria matricola 
     connection.on('message', function(message) {
+         console.log("**Messaggio ricevuto**->"+message);
         if (message.type === 'utf8') { // accetta solo testo
 
             var msgObj = JSON.parse(message.utf8Data);
