@@ -58,6 +58,8 @@ var checkSessionId = function(request, sessionParser) {
     
     return new Promise(function(resolve, reject) {
         try{
+            
+            resolve("UTENTE LOGGATO");  //Da eliminare
             console.log("**checkSessionId**");
             sessionParser(request.httpRequest, {}, function(){
                 var user_id = request.httpRequest.session.user_id;
@@ -105,7 +107,7 @@ var gestisciConnessione = function(request) {
 
     //Funzione richiamata quando l'utente invia il messaggio con la propria matricola 
     connection.on('message', function(message) {
-         console.log("**Messaggio ricevuto**->"+message);
+         console.log("**Messaggio ricevuto**->");
         if (message.type === 'utf8') { // accetta solo testo
 
             var msgObj = JSON.parse(message.utf8Data);
@@ -118,7 +120,9 @@ var gestisciConnessione = function(request) {
                 connessioni[userName]=connection; //registra l'utente
                                 
                 var msg = "Utente registrato con matricola-->"+userName;
-
+                
+                console.log("**Messaggio di risposta**->"+msg);
+               
                 //Invia un messaggio a conferma dell'avvenuta registrazione
                 apiEventi.createResponseMessage("REGISTRAZIONE",msg,null,null,function(message){
                     connection.sendUTF(JSON.stringify(message));
