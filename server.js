@@ -37,33 +37,41 @@ app.use("/auth",routesAuth);
 //var server = app.listen(config.nodeport, function() {});  // FUNZ
 //var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
 
-var server = require('http').createServer(app);
+///////////////////////////////////1/////////////////////////////////
+//var server = require('http').createServer(app);
+//var io = require('socket.io')({
+//            transports  : [ 'websocket' ]
+//         }).listen(server);
+//         
+//io.set( 'origins', '*localhost:3000' );
+//
+//io.sockets.on('connection', function (socket) {
+//                socket.emit('news', { hello: 'world' });
+//                socket.on('my other event', function (data) {
+//                console.log(data);
+//            });
+//    });
+//server.listen(config.nodeport, function() {}); 
+///////////////////////////////////////////////////////////////////////
+////////////////////////////2//////////////////////////////////////
+//var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var porta = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var app2 = express();
+var server = require("http").Server(app2);
+var io = require("socket.io")(server);
 
-var nodeport = process.env.OPENSHIFT_NODEJS_PORT || '8080';
-var serverip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var handleClient = function (socket) {
+    console.log("connection");
+    socket.sendUTF("hello");
+    console.log("hello");
+};
 
-console.log("serverip-->" + serverip ); 
-console.log("nodeport-->" + nodeport ); 
-console.log("process.env.OPENSHIFT_APP_DNS-->" + process.env.OPENSHIFT_APP_DNS ); 
-console.log("process.env.OPENSHIFT_APP_DNS-->" + process.env.OPENSHIFT_APP_DNS ); 
- 
-server.listen(nodeport, serverip, function() {
-  console.log("Server running @ http://" + serverip + ":" + nodeport);
-});
+io.on("connection", handleClient);
 
-var io = require('socket.io')({
-            transports  : [ 'websocket' ]
-         }).listen(server);
-
-io.sockets.on('connection', function (socket) {
-                socket.emit('news', { hello: 'world' });
-                socket.on('my other event', function (data) {
-                console.log(data);
-            });
-    });
-
-
-
+console.log("listen: "+ipaddress+" "+porta);
+server.listen(porta, ipaddress);
+//////////////////////////////////////////////////////////////////
 
 //console.log("URL DATABASE-->"+database.urlMongo);
 //var MongoClient = require('mongodb').MongoClient;
