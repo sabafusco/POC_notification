@@ -38,6 +38,19 @@ app.use("/auth",routesAuth);
 //var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
 
 var server = require('http').createServer(app);
+
+var nodeport = process.env.OPENSHIFT_NODEJS_PORT || '8080';
+var serverip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+
+console.log("serverip-->" + serverip ); 
+console.log("nodeport-->" + nodeport ); 
+console.log("process.env.OPENSHIFT_APP_DNS-->" + process.env.OPENSHIFT_APP_DNS ); 
+console.log("process.env.OPENSHIFT_APP_DNS-->" + process.env.OPENSHIFT_APP_DNS ); 
+ 
+server.listen(nodeport, serverip, function() {
+  console.log("Server running @ http://" + serverip + ":" + nodeport);
+});
+
 var io = require('socket.io')({
             transports  : [ 'websocket' ]
          }).listen(server);
@@ -48,7 +61,8 @@ io.sockets.on('connection', function (socket) {
                 console.log(data);
             });
     });
-server.listen(config.nodeport, function() {}); 
+
+
 
 
 //console.log("URL DATABASE-->"+database.urlMongo);
