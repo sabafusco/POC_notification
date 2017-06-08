@@ -42,8 +42,6 @@ app.use("/auth",routesAuth);
 //var io = require('socket.io')({
 //            transports  : [ 'websocket' ]
 //         }).listen(server);
-//         
-//io.set( 'origins', '*localhost:3000' );
 //
 //io.sockets.on('connection', function (socket) {
 //                socket.emit('news', { hello: 'world' });
@@ -54,23 +52,21 @@ app.use("/auth",routesAuth);
 //server.listen(config.nodeport, function() {}); 
 ///////////////////////////////////////////////////////////////////////
 ////////////////////////////2//////////////////////////////////////
-//var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var porta = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var app2 = express();
-var server = require("http").Server(app2);
+var porta = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var server = require("http").Server(app);
 var io = require("socket.io")(server);
 
 var handleClient = function (socket) {
     console.log("connection");
-    socket.sendUTF("hello");
+    socket.emit('news', { hello: 'world' });
     console.log("hello");
 };
 
-io.on("connection", handleClient);
+io.sockets.on("connection", handleClient);
 
-console.log("listen: "+ipaddress+" "+porta);
-server.listen(porta, ipaddress);
+console.log("listen: "+porta);
+server.listen(porta,ipaddress);
 //////////////////////////////////////////////////////////////////
 
 //console.log("URL DATABASE-->"+database.urlMongo);
