@@ -34,11 +34,21 @@ app.use("/user",checkAuth,routesUtenti,errorHandler);
 app.use("/auth",routesAuth);
 
 //app.listen(3000);
-var server = app.listen(config.nodeport, function() {}); 
+//var server = app.listen(config.nodeport, function() {});  // FUNZ
+//var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
 
-var webSocket = require('./app/websockets/socket').listen(server,sessionParser);
+var server = require('http').createServer(app);
+var io = require('socket.io')({
+            transports  : [ 'websocket' ]
+         }).listen(server);
 
-//var server = app.listen(3000, function() {}); 
+io.sockets.on('connection', function (socket) {
+                socket.emit('news', { hello: 'world' });
+                socket.on('my other event', function (data) {
+                console.log(data);
+            });
+    });
+server.listen(config.nodeport, function() {}); 
 
 
 //console.log("URL DATABASE-->"+database.urlMongo);
