@@ -11,7 +11,8 @@ var utentiInVisualizzazione = new Object();  //Lista di utenti che sono sulla pa
 module.exports.listen = function(server, sessionParser ){
  
     var wsServer = new webSocketServer({
-        httpServer: server
+        httpServer: server,
+        autoAcceptConnections: false
     });
 
     // Questa funzione di callback è richiamata ogni volta che qualche utente prova a connettersi 
@@ -100,7 +101,7 @@ var gestisciConnessione = function(request) {
 
     //Questa chiamata accetta connessioni solo dallo stesso sito
     //var connection = request.accept(null, request.origin); 
-    var connection = request.accept(null, false);
+    var connection = request.accept(null, request.origin);
 
     var userName = false;
 
@@ -134,18 +135,19 @@ var gestisciConnessione = function(request) {
                
                 //Invia un messaggio a conferma dell'avvenuta registrazione
                 apiEventi.createResponseMessage("REGISTRAZIONE",msg,null,null,function(message){
+                    console.log("----Provo ad inviare il messaggio->"+msg);
                     connection.sendUTF(JSON.stringify(message));
                 });
 
                 //Invia un messaggio con il numero di notifiche non lette
-                apiEventi.getEventiNonVisualizzati(userName,function (eventiNonVisualizzati){
-
-                    if(eventiNonVisualizzati){
-                        apiEventi.createResponseMessage("COUNT_NON_VISUALIZZATI",null,null,eventiNonVisualizzati,function(message){
-                            connection.sendUTF(JSON.stringify(message));
-                        });
-                    } 
-                });
+//                apiEventi.getEventiNonVisualizzati(userName,function (eventiNonVisualizzati){
+//
+//                    if(eventiNonVisualizzati){
+//                        apiEventi.createResponseMessage("COUNT_NON_VISUALIZZATI",null,null,eventiNonVisualizzati,function(message){
+//                            //connection.sendUTF(JSON.stringify(message));
+//                        });
+//                    } 
+//                });
 
             }else if (msgObj.type==="VISUALIZZA_LISTA_EVENTI"){
                     
