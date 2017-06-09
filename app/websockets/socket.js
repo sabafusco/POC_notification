@@ -18,14 +18,16 @@ module.exports.listen = function(server, sessionParser ){
     // Questa funzione di callback è richiamata ogni volta che qualche utente prova a connettersi 
     // al websocket server
     wsServer.on('request', function(request) {
+        
+        gestisciConnessione(request);
 
-        checkSessionId(request,sessionParser)
-            .then(function() {
-                    return gestisciConnessione(request);
-                  })
-            .catch(function(err) {
-                    console.log(err);
-                  });
+//        checkSessionId(request,sessionParser)
+//            .then(function() {
+//                    return gestisciConnessione(request);
+//                  })
+//            .catch(function(err) {
+//                    console.log(err);
+//                  });
     });
     
     return wsServer;
@@ -107,11 +109,11 @@ var gestisciConnessione = function(request) {
                         
             var msgObj = JSON.parse(message.utf8Data);
             
-            if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
-            //if (userName === false && msgObj.type==="USERNAME" ) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
+            //if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
+            if (userName === false && msgObj.type==="USERNAME" ) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
                                 
-                userName = request.httpRequest.session.matricola;
-                //userName = "sabatino";
+                //userName = request.httpRequest.session.matricola;
+                userName = "sabatino";
 
                 connessioni[userName]=connection; //registra l'utente
                                 
