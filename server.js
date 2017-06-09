@@ -7,9 +7,7 @@ var session = require('express-session');
 var routesEventi=require('./app/routes/eventoRoute'); 
 var routesUtenti=require('./app/routes/utenteRoute'); 
 var routesAuth=require('./app/routes/authRoute'); 
-var config = require('./config/database');
-
-
+var config = require('./config/app');
 
 var app = express();
 
@@ -33,30 +31,23 @@ app.use("/event",checkAuth,routesEventi,errorHandler);
 app.use("/user",checkAuth,routesUtenti,errorHandler);
 app.use("/auth",routesAuth);
 
-//app.listen(3000);
+//// Crea il server Http e la webSocket 
 var server = require("http").Server(app);
-//var server = app.listen(config.nodeport, function() {});  // FUNZ
 var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
 server.listen(config.nodeport);
-///////////////////////////////////1/////////////////////////////////
-//var server = require('http').createServer(app);
-//var io = require('socket.io')({
-//            transports  : [ 'websocket' ]
-//         }).listen(server);
-//
-//io.sockets.on('connection', function (socket) {
-//                socket.emit('news', { hello: 'world' });
-//                socket.on('my other event', function (data) {
-//                console.log(data);
-//            });
-//    });
-//server.listen(config.nodeport, function() {}); 
-///////////////////////////////////////////////////////////////////////
+
+
+console.log("Url db mongo : "+config.urlMongo);
+console.log("Server http in ascolto sulla porta : "+config.nodeport);
+console.log("Server http avviato.");
+
+
+
 ////////////////////////////2//////////////////////////////////////
 //var porta = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-//
-////app.use(express.static('public'));
-//
+
+//app.use(express.static('public'));
+
 //var server = require("http").Server(app);
 //var io = require("socket.io")(server);
 //
@@ -72,36 +63,6 @@ server.listen(config.nodeport);
 //server.listen(porta);
 //////////////////////////////////////////////////////////////////
 
-//console.log("URL DATABASE-->"+database.urlMongo);
-//var MongoClient = require('mongodb').MongoClient;
-//var autoIncrement = require("mongodb-autoincrement");
-
-//app.route('/addEmploy').get(function(req, res){
-//    
-//        MongoClient.connect(url, function(err, db) {
-//            autoIncrement.getNextSequence(db, 'Employee', function (err, autoIndex) {
-//                db.collection('Employee').insertOne({
-//                    Employeeid: autoIndex ,
-//                    EmployeeName: "NewEmployee"
-//                });
-//            });
-//            res.send("OK");
-//            db.close();
-//        });
-//    });
-//
-//app.route('/Employeeids').get(function(req, res){
-//        
-//        MongoClient.connect(url, function(err, db) {
-//                db.collection('Employee', function (err, collection) {
-//                    collection.find().toArray(function(err, items) {
-//                       if(err) throw err;
-//                       res.send(items);
-//                   });
-//                });
-//                db.close();
-//        });
-//    });
 
 function checkAuth(req, res, next) {
   if (!req.session.user_id) {

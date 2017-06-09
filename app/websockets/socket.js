@@ -18,17 +18,14 @@ module.exports.listen = function(server, sessionParser ){
     // Questa funzione di callback è richiamata ogni volta che qualche utente prova a connettersi 
     // al websocket server
     wsServer.on('request', function(request) {
-        console.log("**ON REQUEST**");
-        
-        gestisciConnessione(request);
-        
-//        checkSessionId(request,sessionParser)
-//            .then(function() {
-//                    return gestisciConnessione(request);
-//                  })
-//            .catch(function(err) {
-//                    console.log(err);
-//                  });
+
+        checkSessionId(request,sessionParser)
+            .then(function() {
+                    return gestisciConnessione(request);
+                  })
+            .catch(function(err) {
+                    console.log(err);
+                  });
     });
     
     return wsServer;
@@ -62,26 +59,20 @@ var checkSessionId = function(request, sessionParser) {
     
     return new Promise(function(resolve, reject) {
         try{
-            console.log("**checkSessionId**");
             sessionParser(request.httpRequest, {}, function(){
                 var user_id = request.httpRequest.session.user_id;
-                console.log("**userID**->"+user_id);
                 if(user_id){
                     apiUtenti.getUtenteById(user_id , function(err, utente){
                         if(err){
-                            console.error("Errore recupero utente by ID nella Websocket.")
                             reject(Error(err.message));
                         }else{
-                            console.log("**Utente Trovato**");
                             if(utente && utente.matricola){
                                 request.httpRequest.session.matricola=utente.matricola;
-                                console.log("**Matricola Utente**->"+utente.matricola);
                                 resolve("UTENTE LOGGATO");
                             }
                         }
                     });
                 }else{
-                    console.error("**Uaser id non trovato**");
                     reject(Error("UTENTE NON LOGGATO!!!"));
                 }
             });
@@ -113,41 +104,33 @@ var gestisciConnessione = function(request) {
          
          
         if (message.type === 'utf8') { // accetta solo testo
-            
-            console.log("** message.type === utf8 **");
-            
+                        
             var msgObj = JSON.parse(message.utf8Data);
             
-            //if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
-            if (userName === false && msgObj.type==="USERNAME" ) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
-                
-                console.log("** msgObj.type===USERNAME **");
-                
-                //userName = request.httpRequest.session.matricola;
-                userName = "sabatino";
+            if (userName === false && msgObj.type==="USERNAME" && request.httpRequest.session.matricola) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
+            //if (userName === false && msgObj.type==="USERNAME" ) { // l'utente non è ancora presente tra le connessioni quindi registra l'utente
+                                
+                userName = request.httpRequest.session.matricola;
+                //userName = "sabatino";
 
                 connessioni[userName]=connection; //registra l'utente
                                 
                 var msg = "Utente registrato con matricola-->"+userName;
-                
-                console.log("**Messaggio di risposta**->"+msg);
-                console.log("**Connection**->"+connection);
-               
+                               
                 //Invia un messaggio a conferma dell'avvenuta registrazione
                 apiEventi.createResponseMessage("REGISTRAZIONE",msg,null,null,function(message){
-                    console.log("----Provo ad inviare il messaggio->"+msg);
                     connection.sendUTF(JSON.stringify(message));
                 });
 
                 //Invia un messaggio con il numero di notifiche non lette
-//                apiEventi.getEventiNonVisualizzati(userName,function (eventiNonVisualizzati){
-//
-//                    if(eventiNonVisualizzati){
-//                        apiEventi.createResponseMessage("COUNT_NON_VISUALIZZATI",null,null,eventiNonVisualizzati,function(message){
-//                            //connection.sendUTF(JSON.stringify(message));
-//                        });
-//                    } 
-//                });
+                apiEventi.getEventiNonVisualizzati(userName,function (eventiNonVisualizzati){
+
+                    if(eventiNonVisualizzati){
+                        apiEventi.createResponseMessage("COUNT_NON_VISUALIZZATI",null,null,eventiNonVisualizzati,function(message){
+                            connection.sendUTF(JSON.stringify(message));
+                        });
+                    } 
+                });
 
             }else if (msgObj.type==="VISUALIZZA_LISTA_EVENTI"){
                     
