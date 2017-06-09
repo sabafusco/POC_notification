@@ -20,7 +20,7 @@ module.exports.listen = function(server, sessionParser ){
     wsServer.on('request', function(request) {
         console.log("**ON REQUEST**");
         
-        gestisciConnessione(request)
+        gestisciConnessione(request);
         
 //        checkSessionId(request,sessionParser)
 //            .then(function() {
@@ -101,7 +101,7 @@ var gestisciConnessione = function(request) {
 
     //Questa chiamata accetta connessioni solo dallo stesso sito
     //var connection = request.accept(null, request.origin); 
-    var connection = request.accept(null, request.origin);
+    var connection = request.accept(null, false);
 
     var userName = false;
 
