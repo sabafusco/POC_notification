@@ -34,8 +34,8 @@ app.use("/user",checkAuth,routesUtenti,errorHandler);
 app.use("/auth",routesAuth);
 
 //app.listen(3000);
-//var server = app.listen(config.nodeport, function() {});  // FUNZ
-//var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
+var server = app.listen(config.nodeport, function() {});  // FUNZ
+var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
 
 ///////////////////////////////////1/////////////////////////////////
 //var server = require('http').createServer(app);
@@ -52,24 +52,24 @@ app.use("/auth",routesAuth);
 //server.listen(config.nodeport, function() {}); 
 ///////////////////////////////////////////////////////////////////////
 ////////////////////////////2//////////////////////////////////////
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var porta = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-
-app.use(express.static('public'));
-
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
-
-var handleClient = function (socket) {
-    console.log("connection");
-    socket.emit('news', { hello: 'world' });
-    console.log("hello");
-};
-
-io.sockets.on("connection", handleClient);
-
-console.log("listen on 2: "+porta);
-server.listen(porta);
+//var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+//var porta = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+//
+//app.use(express.static('public'));
+//
+//var server = require("http").Server(app);
+//var io = require("socket.io")(server);
+//
+//var handleClient = function (socket) {
+//    console.log("connection");
+//    socket.emit('news', { hello: 'world' });
+//    console.log("hello");
+//};
+//
+//io.sockets.on("connection", handleClient);
+//
+//console.log("listen on 2: "+porta);
+//server.listen(porta);
 //////////////////////////////////////////////////////////////////
 
 //console.log("URL DATABASE-->"+database.urlMongo);
