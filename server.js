@@ -54,6 +54,9 @@ app.use("/auth",routesAuth);
 ////////////////////////////2//////////////////////////////////////
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var porta = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+
+app.use(express.static('public'));
+
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
 
