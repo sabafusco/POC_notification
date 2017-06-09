@@ -34,9 +34,10 @@ app.use("/user",checkAuth,routesUtenti,errorHandler);
 app.use("/auth",routesAuth);
 
 //app.listen(3000);
-var server = app.listen(config.nodeport, function() {});  // FUNZ
+var server = require("http").Server(app);
+//var server = app.listen(config.nodeport, function() {});  // FUNZ
 var webSocket = require('./app/websockets/socket').listen(server,sessionParser);  //FUNZ
-
+server.listen(config.nodeport);
 ///////////////////////////////////1/////////////////////////////////
 //var server = require('http').createServer(app);
 //var io = require('socket.io')({
@@ -52,10 +53,9 @@ var webSocket = require('./app/websockets/socket').listen(server,sessionParser);
 //server.listen(config.nodeport, function() {}); 
 ///////////////////////////////////////////////////////////////////////
 ////////////////////////////2//////////////////////////////////////
-//var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 //var porta = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 //
-//app.use(express.static('public'));
+////app.use(express.static('public'));
 //
 //var server = require("http").Server(app);
 //var io = require("socket.io")(server);
